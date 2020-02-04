@@ -11,7 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 
-public class part4third {
+public class Part4_3 {
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable> {
 
@@ -22,7 +22,7 @@ public class part4third {
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
             String s = value.toString();
-            int index_get = s.indexOf("GET");
+            int index_get = s.indexOf("\"");
             int index_start = s.indexOf(" ",index_get)+1;
             int index_end = s.indexOf(" ", index_start);
             String url = s.substring(index_start,index_end);
@@ -61,11 +61,11 @@ public class part4third {
 
 
         Job job = Job.getInstance(conf, "part4third");
-        job.setJarByClass(part4third.class);
+        job.setJarByClass(Part4_3.class);
 
-        job.setMapperClass(part4third.TokenizerMapper.class);
-        job.setCombinerClass(part4third.IntSumReducer.class);
-        job.setReducerClass(part4third.IntSumReducer.class);
+        job.setMapperClass(Part4_3.TokenizerMapper.class);
+        job.setCombinerClass(Part4_3.IntSumReducer.class);
+        job.setReducerClass(Part4_3.IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));

@@ -11,7 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 
-public class part4two {
+public class Part4_1 {
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable> {
 
@@ -22,7 +22,7 @@ public class part4two {
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
             String s = value.toString();
-            String match="10.153.239.5";
+            String match="/assets/img/home-logo.png";
             if(s.contains(match)) {
                 word.set(match);
                 context.write(word, one);
@@ -53,12 +53,12 @@ public class part4two {
         Configuration conf = new Configuration();
 
 
-        Job job = Job.getInstance(conf, "hit count2");
-        job.setJarByClass(part4two.class);
+        Job job = Job.getInstance(conf, "word count");
+        job.setJarByClass(Part4_1.class);
 
-        job.setMapperClass(part4two.TokenizerMapper.class);
-        job.setCombinerClass(part4two.IntSumReducer.class);
-        job.setReducerClass(part4two.IntSumReducer.class);
+        job.setMapperClass(Part4_1.TokenizerMapper.class);
+        job.setCombinerClass(Part4_1.IntSumReducer.class);
+        job.setReducerClass(Part4_1.IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));

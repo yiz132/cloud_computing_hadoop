@@ -11,7 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 
 import java.io.IOException;
 
-public class part4four {
+public class Part4_2 {
     public static class TokenizerMapper
             extends Mapper<Object, Text, Text, IntWritable> {
 
@@ -22,34 +22,29 @@ public class part4four {
         public void map(Object key, Text value, Context context
         ) throws IOException, InterruptedException {
             String s = value.toString();
-            int index_end = s.indexOf(" ");
-            String ip = s.substring(0,index_end);
-            word.set(ip);
-            context.write(word, one);
+            String match="10.153.239.5";
+            if(s.contains(match)) {
+                word.set(match);
+                context.write(word, one);
+            }
+
         }
     }
 
     public static class IntSumReducer
             extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private Text maxWord = new Text();
-        private int max = 0;
+        private IntWritable result = new IntWritable();
+
         @Override
         public void reduce(Text key, Iterable<IntWritable> values,
                            Context context
-        ) {
+        ) throws IOException, InterruptedException {
             int sum = 0;
             for (IntWritable val : values) {
                 sum += val.get();
             }
-            if (sum > max) {
-                max = sum;
-                maxWord.set(key);
-            }
-        }
-
-        @Override
-        public void cleanup(Context context) throws IOException, InterruptedException {
-            context.write(maxWord, new IntWritable(max));
+            result.set(sum);
+            context.write(key, result);
         }
     }
 
@@ -58,12 +53,12 @@ public class part4four {
         Configuration conf = new Configuration();
 
 
-        Job job = Job.getInstance(conf, "part4third");
-        job.setJarByClass(part4four.class);
+        Job job = Job.getInstance(conf, "hit count2");
+        job.setJarByClass(Part4_2.class);
 
-        job.setMapperClass(part4four.TokenizerMapper.class);
-        job.setCombinerClass(part4four.IntSumReducer.class);
-        job.setReducerClass(part4four.IntSumReducer.class);
+        job.setMapperClass(Part4_2.TokenizerMapper.class);
+        job.setCombinerClass(Part4_2.IntSumReducer.class);
+        job.setReducerClass(Part4_2.IntSumReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
