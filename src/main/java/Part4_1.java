@@ -1,4 +1,5 @@
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -62,6 +63,11 @@ public class Part4_1 {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
+        Path out_path = new Path(args[1]);
+        FileSystem fileSystem = out_path.getFileSystem((conf));
+        if (fileSystem.exists(out_path)) {
+            fileSystem.delete(out_path,true);
+        }
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
         System.exit(job.waitForCompletion(true) ? 0 : 1);
     }
