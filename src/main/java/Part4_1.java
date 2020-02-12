@@ -54,7 +54,7 @@ public class Part4_1 {
         Configuration conf = new Configuration();
 
 
-        Job job = Job.getInstance(conf, "word count");
+        Job job = Job.getInstance(conf, "part4_1");
         job.setJarByClass(Part4_1.class);
 
         job.setMapperClass(Part4_1.TokenizerMapper.class);
